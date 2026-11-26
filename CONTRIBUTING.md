@@ -13,10 +13,12 @@ The most useful contribution is **a new game that passes its own recording**, or
 
 ## Add an engine port
 
-A port is any program that reads a case on stdin and prints `{trace, tapeUsed}` (see `games/2048/ports/godot/runner.gd` and `games/2048/ports/rust/src/main.rs`). Add it to the game's `game.json`. It counts as verified only when `verify` passes it.
+A port is any program that reads a case on stdin and prints `{trace, tapeUsed}` (see `games/2048/ports/godot/runner.gd` and `games/2048/ports/bevy/runner/src/main.rs`). Add it to the game's `game.json`. It counts as verified only when `verify` passes it.
 
 ## Rules
 
+- `npm test` runs the unit tests in `test/` (Node only, a few seconds); run it after changing anything in `lib/`.
+  `npm run verify` replays every case through every port.
 - Never edit a recording by hand, and never loosen a comparison to get green.
 - Report numbers as `verify` printed them, including what is not covered.
 - Add a mistake worth not repeating to `docs/pitfalls.md` in the same change.

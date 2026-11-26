@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { listGames, loadGame } from "../lib/verify.mjs";
+import { exportedNames } from "./exported-names.mjs";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const modules = new Map();
@@ -16,7 +17,7 @@ function inline(dir, file, out) {
   const id = `__mod${modules.size}`;
   modules.set(full, id);
   const src = fs.readFileSync(full, "utf8");
-  const names = [...src.matchAll(/^export\s+(?:async\s+)?(?:const|let|var|function\*?|class)\s+([A-Za-z_$][\w$]*)/gm)].map((m) => m[1]);
+  const names = exportedNames(src);
   const body = imports(src, path.dirname(full), out).replace(/^export\s+/gm, "");
   out.push(`const ${id} = (() => {\n${body}\nreturn { ${names.join(", ")} };\n})();\n`);
   return id;

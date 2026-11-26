@@ -4,15 +4,17 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 26 }
+      - name: Unit tests (lib/, Node only)
+        run: npm test
       - uses: dtolnay/rust-toolchain@stable
       - run: npm install --no-save playwright && npx playwright install --with-deps chromium
       - name: Godot 4.4.1 (checked against the published SHA-512)
         run: |
           V=4.4.1-stable; B=https://github.com/godotengine/godot/releases/download/$V
           curl -sL -o godot.zip $B/Godot_v${V}_linux.x86_64.zip; curl -sL -o SUMS $B/SHA512-SUMS.txt
-          grep " Godot_v${V}_linux.x86_64.zip" SUMS | sed 's/ Godot.*/  godot.zip/' | sha512sum -c -
+          grep " Godot_v${V}_linux.x86_64.zip" SUMS | sed 's/Godot_v.*/godot.zip/' | sha512sum -c -
           unzip -q godot.zip; echo "REA_GODOT=$PWD/Godot_v${V}_linux.x86_64" >> $GITHUB_ENV
       - run: node bin/rea-games.mjs verify all

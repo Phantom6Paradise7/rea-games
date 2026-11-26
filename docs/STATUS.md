@@ -58,6 +58,41 @@ Recorded from the unmodified original (MIT) with a fake clock and its random pie
 
 Gaps: the original's "second drop in the frame that loses" appears in only 3 recorded frames, and a full top row is never reached. The original has no pause. The Godot scene was smoke-tested headless only; the Bevy window compiled and one software-rendered screenshot shows the court, a piece, the next-piece preview and the score text, but no keys were sent. The game is called "blocks" because Tetris is a registered trademark; see `NOTICE`.
 
+## Bricks (brick breaking)
+
+| Game | Port | Cases | Steps | Result |
+|---|---|---|---|---|
+| Bricks | web (JS) | 37 | 209,600 | all identical, exact comparison |
+
+Recorded from the unmodified original (MIT) with a fake clock that also runs its `setInterval` frame loop and its
+one-second launch countdown, the paddle's random start taped, and "Abandon game?" answered by the case: 101 games, 166 balls
+lost, 47 games lost, 19 abandoned and 14 abandons declined, 14 levels won (one wrap from the last level to the first),
+3,212 bricks hit, all 10 levels played, ball speed up to 314.66 of its 315 cap, 321 late steps of 40 to 500 ms. Breaking
+the speed gained per brick, the state a key acts in and the paddle's centre made 35, 35 and 33 of 37 cases fail. These
+numbers were measured on Windows (Node 24, Chromium from Playwright 1.65.1), not in the Linux container above.
+
+The play page (`docs/play/bricks.html`) has its own art and six levels of its own; it was played in headless Chromium for
+20 s (keys, countdown, bricks, a lost ball) with no console errors. Gaps: touch (dragging the paddle) and window
+resizing are not recorded, the canvas is only ever 640 x 480, and no Godot or Bevy port exists yet. The game is called
+"bricks" because Breakout is a trademark; see `NOTICE`.
+
+## Paddles (two-paddle ball game)
+
+| Game | Port | Cases | Steps | Result |
+|---|---|---|---|---|
+| Paddles | web (JS) | 19 | 198,300 | all identical, exact comparison |
+
+Recorded from the unmodified original (MIT) with the same fake clock as Bricks (its frame loop is a `setInterval`),
+every serve and every computer prediction taped, and "abandon?" answered by the case: 59 games with 0, 1 and 2 people
+(15, 22, 22), 21 played to 9 points, 24 abandoned and 6 abandons declined, 337 points, 1,457 paddle hits (362 with spin),
+2,865 computer predictions over levels 1 to 16, 661 late steps. Breaking the acceleration, the spin rule and the
+computer's dead zone made 16, 15 and 14 of 19 cases fail. Measured on Windows (Node 24, Chromium from Playwright
+1.65.1).
+
+The play page (`docs/play/paddles.html`) has its own art; it was played in headless Chromium (one player, 18 s, keys)
+with no console errors. Gaps: the computer's level 0 (behind by 8 points) never happened, and there is no Godot or
+Bevy port yet. The game is called "paddles" because Pong is a trademark; see `NOTICE`.
+
 ## Gaps (read before quoting any number)
 
 - **Coverage is what the cases hit.** Dino: only 7 crashes into the flying obstacle, none while speed-dropping; no
@@ -73,7 +108,8 @@ Gaps: the original's "second drop in the frame that loses" appears in only 3 rec
   official release and checked against the published SHA-512 before use. Breaking the GDScript port (spawn odds, win
   threshold) made 16 and 3 of 19 cases pass, so the check bites there too.
 - The repository has not been pushed anywhere. Cases are stored gzipped (`rea-games pack`).
-- The agent plugin manifest (`.claude-plugin`) was written from the documented format and has not been installed in
-  Claude Code. The Codex plugin format is not provided; `AGENTS.md` points Codex at the skill.
+- Agent plugin manifests: `.claude-plugin` (Claude), `.codex-plugin` (Codex), and `.agents/plugins/marketplace.json`
+  (agent-agnostic marketplace). `test/plugin.test.mjs` keeps both `plugin.json` versions equal to `package.json`.
+  They have not been installed end-to-end here.
 - `node games/dino/record.mjs --visual` reads unpacked `cases/*.json`; run `rea-games record dino` first (it also clears packed copies).
 - CI (`.github/workflows/verify.yml`) has never run.

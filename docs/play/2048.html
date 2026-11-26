@@ -16,8 +16,8 @@
   .box { background:var(--panel); border-radius:8px; padding:6px 14px; text-align:center; min-width:70px; }
   .box small { display:block; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
   .box b { font-size:20px; }
-  #board { position:relative; background:var(--panel); border-radius:12px; padding:10px; aspect-ratio:1;
-           display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr); gap:10px; }
+  #board { position:relative; background:var(--panel); border-radius:12px; padding:10px; aspect-ratio:1; display:flex; }
+  #grid { flex:1; min-width:0; min-height:0; display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr); gap:10px; }
   .cell { min-width:0; min-height:0; background:var(--cell); border-radius:8px; display:grid; place-items:center; font-weight:800;
           font-size:clamp(20px,7vw,34px); transition:background .08s; }
   .v2{background:#3b4252}.v4{background:#434c5e}.v8{background:#d08770;color:#fff}.v16{background:#d9774f;color:#fff}
@@ -26,6 +26,7 @@
   .v2048{background:#88c0d0;color:#111;font-size:clamp(16px,5.5vw,28px)}.vbig{background:#b48ead;color:#fff;font-size:clamp(14px,4.5vw,24px)}
   #msg { position:absolute; inset:0; border-radius:12px; background:rgba(20,22,28,.82); display:none; place-content:center;
          text-align:center; gap:12px; }
+  .sr-only { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   #msg.on { display:grid; } #msg h2 { margin:0; font-size:34px; }
   button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:10px 18px; font:inherit; font-weight:700; cursor:pointer; }
   p { color:var(--muted); font-size:14px; }
@@ -35,9 +36,10 @@
 <main>
   <header>
     <h1>2048</h1>
-    <div class="scores"><div class="box"><small>score</small><b id="score">0</b></div><div class="box"><small>best</small><b id="best">0</b></div></div>
+    <div class="scores" aria-live="polite" aria-atomic="true"><div class="box"><small>score</small><b id="score">0</b></div><div class="box"><small>best</small><b id="best">0</b></div></div>
   </header>
-  <div id="board"><div id="msg"><h2 id="msgtitle"></h2><div><button id="keep">Keep playing</button> <button id="again">New game</button></div></div></div>
+  <div id="board"><div id="grid" role="img" aria-label="2048 board" aria-describedby="board-desc" tabindex="0"></div><div id="msg"><h2 id="msgtitle" tabindex="-1"></h2><div><button id="keep">Keep playing</button> <button id="again">New game</button></div></div></div>
+  <p id="board-desc" class="sr-only"></p>
   <p>Arrow keys, WASD or swipe. A rebuild checked against recordings of the original: <code>rea-games verify 2048</code>.</p>
   <button id="restart">New game</button>
 </main>
@@ -154,17 +156,29 @@ return { SIZE, Game2048 };
 
 const { Game2048, SIZE } = __mod0;
 const game = new Game2048();
-const board = document.getElementById("board");
+const grid = document.getElementById("grid");
 const cells = [];
-for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) { const c = document.createElement("div"); c.className = "cell"; board.append(c); cells.push([x, y, c]); }
+for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) { const c = document.createElement("div"); c.className = "cell"; grid.append(c); cells.push([x, y, c]); }
+let wasTerminated = false;
 function draw() {
   const s = game.snapshot();
   for (const [x, y, c] of cells) { const v = s.grid[x][y]; c.textContent = v || ""; c.className = "cell" + (v ? " " + (v <= 2048 ? "v" + v : "vbig") : ""); }
   score.textContent = s.score; best.textContent = s.best;
+  const rows = [];
+  for (let y = 0; y < SIZE; y++) {
+    const row = [];
+    for (let x = 0; x < SIZE; x++) row.push(s.grid[x][y] || "empty");
+    rows.push(`Row ${y + 1}: ${row.join(", ")}.`);
+  }
+  document.getElementById("board-desc").textContent = rows.join(" ");
   const msg = document.getElementById("msg");
   msg.classList.toggle("on", s.terminated);
   msgtitle.textContent = s.over ? "Game over" : "You made 2048";
   keep.style.display = s.over ? "none" : "";
+  if (s.terminated !== wasTerminated) {
+    if (s.terminated) msgtitle.focus(); else grid.focus();
+    wasTerminated = s.terminated;
+  }
 }
 const key = { ArrowUp:0, w:0, ArrowRight:1, d:1, ArrowDown:2, s:2, ArrowLeft:3, a:3 };
 addEventListener("keydown", (e) => { if (e.key in key) { e.preventDefault(); game.move(key[e.key]); draw(); } });

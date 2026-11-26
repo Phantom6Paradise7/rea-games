@@ -17,6 +17,9 @@ The rebuilds in games/*/ports are written from the behavior specs in games/*/GAM
 code, art or sound. The names 2048 and "Dino" describe the games being studied; this project is not affiliated with
 their authors or with Google. The falling-blocks game is called "blocks" here: Tetris is a registered
 trademark of its owner, this project is not affiliated with it, and the rebuild uses no Tetris name or art.
+The brick-breaking game is called "bricks" here for the same reason: Breakout is a trademark of its owner. Its rebuild
+draws its own art and ships its own levels; the recordings carry the original's brick layouts as measurements.
+The two-paddle ball game is called "paddles" for the same reason: Pong is a trademark of its owner.
 
 The recordings (games/*/cases) are measurements of how the originals behave: input lists, random numbers and
 resulting game states.
