@@ -27,6 +27,7 @@ trademark of its owner, this project is not affiliated with it, and the rebuild 
 The brick-breaking game is called "bricks" here for the same reason: Breakout is a trademark of its owner. Its rebuild
 draws its own art and ships its own levels; the recordings carry the original's brick layouts as measurements.
 The two-paddle ball game is called "paddles" for the same reason: Pong is a trademark of its owner.
+The mine-finding game is called "mines" for the same reason: Minesweeper is a trademark of its owner.
 
 The recordings (games/*/cases) are measurements of how the originals behave: input lists, random numbers and
 resulting game states.

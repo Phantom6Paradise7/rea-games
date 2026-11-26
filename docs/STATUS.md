@@ -93,6 +93,23 @@ The play page (`docs/play/paddles.html`) has its own art; it was played in headl
 with no console errors. Gaps: the computer's level 0 (behind by 8 points) never happened, and there is no Godot or
 Bevy port yet. The game is called "paddles" because Pong is a trademark; see `NOTICE`.
 
+## Mines (mine-finding grid)
+
+| Game | Port | Cases | Inputs | Result |
+|---|---|---|---|---|
+| Mines | web (JS) | 14 | 628 | all identical, exact comparison |
+
+Recorded from the unmodified original (MIT) with a fake clock and a taped `Math.random`; jQuery 1.8.3 is served from a
+local copy and its two start-up draws are cleared from the tape. The 14 cases cover all three difficulties: 25 first
+clicks drew 32 mine maps (7 rejected because the clicked cell was a mine), 4 games won and 15 lost, 133 left and 466
+right clicks (flags and chords). Breaking the easy difficulty constant, the chord flag check and a neighbour offset made
+8, 1 and 14 of 14 cases fail.
+
+The play page (`docs/play/mines.html`) draws its own tiles, numbers and flags; it was played in Chromium (easy board,
+a reveal with a flood fill, a flag) with no console errors. Gaps: the original's animations, its image drawing and the
+saved high scores are not recorded, and there is no Godot or Bevy port yet. The game is called "mines" because
+Minesweeper is a trademark; see `NOTICE`.
+
 ## Gaps (read before quoting any number)
 
 - **Coverage is what the cases hit.** Dino: only 7 crashes into the flying obstacle, none while speed-dropping; no

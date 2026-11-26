@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
-import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
+import { loadPlaywright } from "../../lib/playwright.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const ORIGINAL_DIR = path.join(here, "../../originals/mines");
@@ -18,23 +18,6 @@ const MIME = {
   ".gif": "image/gif",
   ".svg": "image/svg+xml",
 };
-
-function loadPlaywright() {
-  const require = createRequire(import.meta.url);
-  const tries = [
-    process.env.PLAYWRIGHT_PATH,
-    "playwright",
-    "playwright-core",
-    "/opt/node22/lib/node_modules/playwright",
-    "/opt/node-tools/node_modules/playwright",
-  ].filter(Boolean);
-  for (const t of tries) {
-    try {
-      return require(t);
-    } catch {}
-  }
-  throw new Error("playwright not found; set PLAYWRIGHT_PATH");
-}
 
 function startStaticServer() {
   return new Promise((resolve) => {
