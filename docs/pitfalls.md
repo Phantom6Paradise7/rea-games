@@ -16,3 +16,5 @@ case "differed". Compare parsed values (`lib/compare.mjs`), never `JSON.stringif
 
 **A check that cannot fail looks like a pass.** After a port is green, break it three ways (a constant, a branch, an
 offset) and watch `verify` fail each time; otherwise the cases may not reach the code you think they do.
+
+**Third-party libraries can consume `Math.random()` before the game starts.** jQuery 1.8.3 calls `Math.random()` twice during initialization, which prepended two stray draws to `tape` and shifted every mine placement. Reset the RNG tape after page load finishes so `tape` records only calls from the game itself.
